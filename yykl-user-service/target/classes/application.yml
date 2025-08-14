@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    # 数据库驱动类（MySQL 8.x使用com.mysql.cj.jdbc.Driver）
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 数据库连接URL（替换为你的数据库地址、端口和库名）
+    url: jdbc:mysql://localhost:3306/yykl_user?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    # 数据库用户名
+    username: root
+    # 数据库密码
+    password: 123456  # 替换为你的数据库密码
+    # 连接池配置（可选，使用默认值也可）
+    hikari:
+      maximum-pool-size: 10  # 最大连接数
+      minimum-idle: 5        # 最小空闲连接数
+      idle-timeout: 300000   # 空闲连接超时时间（毫秒）
+      connection-timeout: 20000  # 连接超时时间（毫秒）
+
+# MyBatis-Plus配置（可选，根据需要添加）
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml  # 如果有XML映射文件，指定路径
+  type-aliases-package: com.yykl.user.model.entity  # 实体类包路径
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 打印SQL日志（开发环境用）
+    map-underscore-to-camel-case: true  # 下划线转驼峰命名
