@@ -1,0 +1,42 @@
+logging:
+  level:
+    org.springframework.beans.factory: TRACE  # 打印Bean创建的每一步细节
+    org.springframework.context: TRACE
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL驱动类
+    url: jdbc:mysql://localhost:3306/your_database_name?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root2  # 数据库用户名
+    password: 123456  # 数据库密码
+  data:
+    redis:
+      host: localhost  # Redis服务器地址
+      port: 6379       # Redis端口，默认6379
+      # 若Redis有密码或其他配置，补充如下
+      # password: your_password
+      # database: 0  # 数据库索引，默认0
+      timeout: 3000ms # 连接超时时间
+
+# 生产环境支付配置
+payment:
+  # 微信支付配置
+  wechat:
+    appId: wx1234567890abcdef  # 替换为实际AppID
+    mchId: 1900000109          # 替换为实际商户号
+    apiKey: a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8  # 替换为实际API密钥
+    certPath: classpath:cert/wechat/apiclient_cert.p12  # 证书路径（如有）
+
+  # 支付宝配置
+  alipay:
+    appId: 2021003123456789    # 替换为实际AppID
+    merchantPrivateKey: |      # 私钥（注意竖线保留换行）
+      MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQ...
+      ...（完整私钥内容）...
+      +tO3jE1t5Q==
+    alipayPublicKey: |         # 支付宝公钥（注意竖线保留换行）
+      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQE...
+      ...（完整公钥内容）...
+      QQIDAQAB
+    notifyUrl: https://api.yourdomain.com/payment/alipay/notify  # 异步通知地址
+    returnUrl: https://www.yourdomain.com/order/success          # 同步跳转地址
