@@ -1,4 +1,17 @@
+
 spring:
+  application:
+    name: yykl-user-service  # 当前服务的名称
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848  # Nacos服务器地址（IP:端口）
+        # 可选配置
+        namespace: public  # 命名空间（默认public，多环境隔离时使用）
+        group: DEFAULT_GROUP  # 服务分组（默认DEFAULT_GROUP）
+        # 如果Nacos开启了认证，需要配置账号密码
+        # username: nacos
+        # password: nacos
   datasource:
     # 数据库驱动类（MySQL 8.x使用com.mysql.cj.jdbc.Driver）
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -22,3 +35,18 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 打印SQL日志（开发环境用）
     map-underscore-to-camel-case: true  # 下划线转驼峰命名
+server:
+  port: 8081
+jwt:
+  secret: your-complex-secret-key-here-123456  # 复杂密钥
+  expiration: 3600000  # 过期时间（毫秒）
+
+
+
+logging:
+  level:
+    org.springframework.beans.factory: DEBUG  # 保留，查看Bean初始化
+    org.springframework.context: DEBUG        # 保留，查看上下文刷新
+    com.baomidou.mybatisplus: DEBUG           # 新增，查看MyBatis-Plus的Bean处理
+    com.zaxxer.hikari: DEBUG                  # 新增，查看连接池初始化
+    root: INFO  # 限制其他日志级别，避免冗余
