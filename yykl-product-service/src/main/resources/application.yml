@@ -1,0 +1,41 @@
+# 服务端口 配置
+server:
+  port: 8083  # 项目启动端口
+
+# Spring 配置
+spring:
+  application:
+    name: yykl-user-service  # 当前服务的名称
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848  # Nacos服务器地址（IP:端口）
+        # 可选配置
+        namespace: public  # 命名空间（默认public，多环境隔离时使用）
+        group: DEFAULT_GROUP  # 服务分组（默认DEFAULT_GROUP）
+        # 如果Nacos开启了认证，需要配置账号密码
+        # username: nacos
+        # password: nacos
+  # 数据库配置（如果使用 MySQL）
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/your_database?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: your_password
+
+  # Redis 配置（你的项目中用到了 RedisTemplate）
+  redis:
+    data:
+      host: localhost
+      port: 6379
+      password:  # 若 Redis 无密码则留空
+      database: 0  # 数据库索引，默认 0
+      timeout: 3000ms  # 连接超时时间
+
+# MyBatis-Plus 配置（你的项目使用了 MyBatis-Plus）
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml  # 如果有 XML 映射文件，指定路径
+  type-aliases-package: com.yykl.product.model.entity  # 实体类包路径
+  configuration:
+    map-underscore-to-camel-case: true  # 下划线转驼峰命名
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 打印 SQL 日志（开发环境用）

@@ -2,12 +2,17 @@ logging:
   level:
     org.springframework.beans.factory: TRACE  # 打印Bean创建的每一步细节
     org.springframework.context: TRACE
+server:
+  port: 8082
 
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml  # 扫描resources/mapper目录下的所有XML文件
+  type-aliases-package: com.yykl.order.model.entity  # 实体类别名包路径
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL驱动类
-    url: jdbc:mysql://localhost:3306/your_database_name?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: root2  # 数据库用户名
+    url: jdbc:mysql://localhost:3306/yykl_order_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root  # 数据库用户名
     password: 123456  # 数据库密码
   data:
     redis:
@@ -17,7 +22,15 @@ spring:
       # password: your_password
       # database: 0  # 数据库索引，默认0
       timeout: 3000ms # 连接超时时间
-
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848  # Nacos服务器地址（需与你的Nacos部署地址一致）
+        namespace: public  # 命名空间（默认public，若有自定义需对应）
+        username: nacos
+        password: nacos
+  application:
+    name: yykl-order-service  # 服务名（必须与你启动的服务名一致）
 # 生产环境支付配置
 payment:
   # 微信支付配置

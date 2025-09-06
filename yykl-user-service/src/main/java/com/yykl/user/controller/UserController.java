@@ -3,6 +3,9 @@ package com.yykl.user.controller;
 import com.yykl.user.model.entity.User;
 import com.yykl.user.model.request.UpdateUserRequest;
 import com.yykl.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name = "用户信息接口", description = "用户信息查询及修改相关接口") // 类级标签
 public class UserController {
 
     @Autowired
@@ -21,6 +25,7 @@ public class UserController {
 
     // 获取当前登录用户信息
     @GetMapping("/info")
+    @Operation(summary = "获取当前登录用户信息", description = "返回当前用户的基本信息（密码已脱敏）")
     public ResponseEntity<User> getCurrentUser() {
         // 从Security上下文获取当前登录用户名
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -35,6 +40,7 @@ public class UserController {
 
     // 修改个人信息
     @PutMapping("/update")
+    @Operation(summary = "更新用户信息", description = "修改当前登录用户的昵称、电话或头像")
     public ResponseEntity<Map<String, String>> updateUser(@RequestBody UpdateUserRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();

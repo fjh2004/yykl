@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yykl.product.mapper.ProductMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.yykl.product.model.entity.Product">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="category_id" property="category"/>
+        <result column="description" property="description"/>
+        <result column="price" property="price"/>
+        <result column="cover_url" property="coverUrl"/>
+        <result column="status" property="status"/>
+
+    </resultMap>
+
+    <!-- 产品详情查询（关联SKU和库存） -->
+    <resultMap id="ProductDetailResultMap" type="com.yykl.product.model.entity.Product" extends="BaseResultMap">
+        <!-- 关联库存信息 -->
+        <association property="stock" javaType="com.yykl.product.model.entity.ProductStock">
+            <id column="stock_id" property="id"/>
+            <result column="stock_product_id" property="productId"/>
+            <result column="quantity" property="quantity"/>
+            <result column="locked_stock" property="lockedStock"/>
+            <result column="stock_update_time" property="updateTime"/>
+        </association>
+        <!-- 关联SKU列表 -->
+        <collection property="skus" ofType="com.yykl.product.model.entity.ProductSku">
+            <id column="sku_id" property="id"/>
+            <result column="sku_product_id" property="productId"/>
+            <result column="sku_name" property="name"/>
+            <result column="sku_price" property="price"/>
+            <result column="sku_spec" property="spec"/>
+        </collection>
+
+    </resultMap>
+
+    <!-- 查询产品详情（包含SKU和库存） -->
+    <select id="selectProductDetail" parameterType="java.lang.Long" resultMap="ProductDetailResultMap">
+        SELECT
+            p.*,
+            s.id AS sku_id,
+            s.product_id AS sku_product_id,
+            s.name AS sku_name,
+            s.price AS sku_price,
+            s.spec AS sku_spec,
+            st.id AS stock_id,
+            st.product_id AS stock_product_id,
+            st.quantity,
+            st.locked_stock,
+            st.update_time AS stock_update_time
+        FROM product p
+                 LEFT JOIN product_sku s ON p.id = s.product_id
+                 LEFT JOIN product_stock st ON p.id = st.product_id
+        WHERE p.id = #{id}
+    </select>
+
+    <!-- 按分类和排序查询产品（分页） -->
+    <select id="selectByCategoryWithSort" parameterType="map" resultMap="BaseResultMap">
+        SELECT * FROM product
+        <where>
+            <if test="categoryId != null">AND category_id = #{categoryId}</if>
+            AND status = 1
+        </where>
+        <choose>
+            <when test="sort != null and sort != ''">
+                ORDER BY ${sort}
+            </when>
+            <otherwise>
+                ORDER BY create_time DESC
+            </otherwise>
+        </choose>
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 按场景标签查询产品 -->
+    <select id="selectBySceneTag" parameterType="map" resultMap="BaseResultMap">
+        SELECT * FROM product
+        WHERE status = 1
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 搜索产品（名称/描述匹配） -->
+    <select id="searchProducts" parameterType="map" resultMap="BaseResultMap">
+        SELECT * FROM product
+        WHERE status = 1
+          AND (
+            name LIKE CONCAT('%', #{keyword}, '%')
+                OR description LIKE CONCAT('%', #{keyword}, '%')
+            )
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 批量查询产品信息 -->
+    <select id="selectByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT * FROM product
+        WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND status = 1
+    </select>
+</mapper>

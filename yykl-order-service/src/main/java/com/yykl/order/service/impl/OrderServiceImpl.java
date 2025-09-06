@@ -1,10 +1,14 @@
 package com.yykl.order.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yykl.order.enums.OrderEvent;
 import com.yykl.order.enums.OrderState;
 import com.yykl.order.mapper.OrderMapper;
 import com.yykl.order.model.dto.OrderCreateDTO;
+import com.yykl.order.model.dto.OrderQueryDTO;
 import com.yykl.order.model.entity.Order;
 import com.yykl.order.service.OrderService;
 import com.yykl.order.util.RedisLockUtil;
@@ -32,6 +36,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private OrderStateMachineService stateMachineService;
 
+    @Autowired
+    private OrderMapper orderMapper;
+
     @Override
     @Transactional
     public String createOrder(OrderCreateDTO orderDTO) {
@@ -43,11 +50,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             // 校验库存（Redis预扣减）
             String stockKey = "product_stock:" + orderDTO.getProductId();
             Long stock = redisTemplate.opsForValue().decrement(stockKey, orderDTO.getQuantity());
-            
+
             if (stock != null && stock >= 0) {
                 // 真实库存扣减（MySQL事务）
                 baseMapper.deductStock(orderDTO.getProductId(), orderDTO.getQuantity());
-                
+
                 // 生成订单（雪花算法）
                 Order order = new Order();
                 order.setOrderNo(generateOrderNo());
@@ -55,7 +62,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 order.setUserId(orderDTO.getUserId());
                 order.setTotalAmount(orderDTO.getTotalFee());
                 this.save(order);
-                
+
                 return order.getOrderNo();
             }
             throw new RuntimeException("库存不足");
@@ -85,16 +92,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             if (order == null) {
                 throw new RuntimeException("订单不存在");
             }
-            
+
             // 状态机校验
             validateStateTransition(orderNo, OrderEvent.CANCEL);
-            
+
             // 执行取消操作
             boolean updateSuccess = baseMapper.updateOrderStatus(orderNo, OrderState.CANCELED.ordinal()) > 0;
-            
+
             // 库存回滚（需要实现）
             rollbackStock(order.getProductId(), order.getQuantity());
-            
+
             return updateSuccess;
         } finally {
             redisLockUtil.unlock(lockKey, lockValue);
@@ -106,5 +113,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         String stockKey = "product_stock:" + productId;
         redisTemplate.opsForValue().increment(stockKey, quantity);
         baseMapper.rollbackStock(productId, quantity);
+    }
+
+    // 个人查询订单实现
+    @Override
+    public IPage<Order> queryPersonalOrders(OrderQueryDTO queryDTO) {
+        if (queryDTO.getUserId() == null) {
+            throw new IllegalArgumentException("用户ID不能为空");
+        }
+        Page<Order> page = new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize());
+        // 调用Mapper的分页查询方法
+        return orderMapper.selectPersonalOrders(page, queryDTO.getUserId(),
+                queryDTO.getOrderState() != null ? queryDTO.getOrderState().ordinal() : null);
+    }
+
+    // 商家查询所有订单实现
+    @Override
+    public IPage<Order> queryAllOrders(OrderQueryDTO queryDTO) {
+        Page<Order> page = new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize());
+        return orderMapper.selectAllOrders(page,
+                queryDTO.getOrderState() != null ? queryDTO.getOrderState().ordinal() : null);
     }
 }

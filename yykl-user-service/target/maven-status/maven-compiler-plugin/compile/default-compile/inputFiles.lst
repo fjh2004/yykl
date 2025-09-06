@@ -4,11 +4,13 @@ D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\mapper\UserMapper.
 D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\model\entity\User.java
 D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\service\impl\UserServiceImpl.java
 D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\service\impl\UserDetailsServiceImpl.java
+D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\model\entity\UserAddress.java
 D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\model\request\RegisterRequest.java
 D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\controller\AuthController.java
 D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\service\UserService.java
 D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\config\SecurityConfig.java
 D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\filter\JwtAuthenticationFilter.java
+D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\config\SwaggerConfig.java
 D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\model\entity\UserRoleRelation.java
 D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\model\entity\Permission.java
 D:\Trae CN\yykl\yykl-user-service\src\main\java\com\yykl\user\model\entity\Role.java

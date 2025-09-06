@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yykl.product.mapper.ProductStockMapper">
+
+    <!-- 锁定库存（原子操作，确保库存充足时才更新） -->
+    <update id="lockStock">
+        UPDATE product_stock
+        SET locked_stock = locked_stock + #{quantity},
+            update_time = NOW()
+        WHERE product_id = #{productId}
+          AND (quantity - locked_stock) >= #{quantity}
+    </update>
+
+    <!-- 扣减库存（原子操作，确保锁定库存充足时才更新） -->
+    <update id="deductStock">
+        UPDATE product_stock
+        SET quantity = quantity - #{quantity},
+            locked_stock = locked_stock - #{quantity},
+            update_time = NOW()
+        WHERE product_id = #{productId}
+          AND locked_stock >= #{quantity}
+    </update>
+
+    <!-- 解锁库存（原子操作） -->
+    <update id="unlockStock">
+        UPDATE product_stock
+        SET locked_stock = locked_stock - #{quantity},
+            update_time = NOW()
+        WHERE product_id = #{productId}
+          AND locked_stock >= #{quantity}
+    </update>
+
+</mapper>

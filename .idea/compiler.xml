@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="yykl-user-service" />
+        <module name="yykl-product-service" />
+        <module name="yykl-order-service" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="yykl-analysis-service" target="17" />
+      <module name="yykl-consultation-service" target="17" />
+      <module name="yykl-content-service" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="yykl-analysis-service" options="-parameters" />
+      <module name="yykl-consultation-service" options="-parameters" />
+      <module name="yykl-content-service" options="-parameters" />
+      <module name="yykl-order-service" options="-parameters" />
+      <module name="yykl-product-service" options="-parameters" />
+      <module name="yykl-user-service" options="-parameters" />
+    </option>
+  </component>
+</project>

@@ -1,11 +1,12 @@
-
 package com.yykl.user.controller;
 
 import com.yykl.user.model.request.LoginRequest;
 import com.yykl.user.model.request.RegisterRequest;
 import com.yykl.user.service.UserService;
-import com.yykl.user.service.impl.UserDetailsServiceImpl;
 import com.yykl.user.util.JwtUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,8 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "认证接口", description = "用户登录及注册相关接口") // 类级标签
 public class AuthController {
 
     @Autowired
@@ -37,6 +40,7 @@ public class AuthController {
     private JwtUtils jwtUtils;
 
     @PostMapping("/login")
+    @Operation(summary = "用户登录", description = "通过用户名和密码登录，返回JWT令牌及用户角色")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest loginRequest) {
         // 1. 调用Spring Security认证管理器进行认证
         Authentication authentication = authenticationManager.authenticate(
@@ -65,6 +69,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "用户注册", description = "新用户注册接口，返回注册结果")
     public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest registerRequest) {
         try {
             userService.register(registerRequest);

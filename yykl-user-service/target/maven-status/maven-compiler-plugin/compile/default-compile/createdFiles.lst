@@ -16,3 +16,5 @@ com\yykl\user\service\impl\UserDetailsServiceImpl.class
 com\yykl\user\model\entity\UserRoleRelation.class
 com\yykl\user\service\UserService.class
 com\yykl\user\UserServiceApplication.class
+com\yykl\user\model\entity\UserAddress.class
+com\yykl\user\config\SwaggerConfig.class

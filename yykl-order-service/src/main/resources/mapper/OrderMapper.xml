@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 对应OrderMapper接口的全类名 -->
+<mapper namespace="com.yykl.order.mapper.OrderMapper">
+
+    <!-- 1. 扣减商品库存（对应deductStock方法） -->
+    <update id="deductStock">
+        UPDATE product
+        SET stock = stock - #{quantity}
+        WHERE id = #{productId} AND stock >= #{quantity}
+    </update>
+
+    <!-- 2. 回滚商品库存（对应rollbackStock方法） -->
+    <update id="rollbackStock">
+        UPDATE product
+        SET stock = stock + #{quantity}
+        WHERE id = #{productId}
+    </update>
+
+    <!-- 3. 更新订单状态（对应updateOrderStatus方法） -->
+    <!-- 注意：原Order实体类中字段为orderState，数据库表字段为order_state，需保持一致 -->
+    <update id="updateOrderStatus">
+        UPDATE t_order
+        SET order_state = #{status},
+            update_time = CURRENT_TIMESTAMP
+        WHERE order_no = #{orderNo}
+    </update>
+
+    <!-- 4. 分页查询个人订单（配合之前添加的查询功能） -->
+    <select id="selectPersonalOrders" resultType="com.yykl.order.model.entity.Order">
+        SELECT * FROM t_order
+        WHERE user_id = #{userId}
+        <if test="orderState != null">AND order_state = #{orderState}</if>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 5. 分页查询所有订单（商家用，配合之前添加的查询功能） -->
+    <select id="selectAllOrders" resultType="com.yykl.order.model.entity.Order">
+        SELECT * FROM t_order
+        <if test="orderState != null">WHERE order_state = #{orderState}</if>
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

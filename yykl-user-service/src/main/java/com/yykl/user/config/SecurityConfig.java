@@ -58,7 +58,11 @@ public class SecurityConfig {  // 注意：已移除WebSecurityConfigurerAdapter
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 无状态会话
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register").permitAll()  // 放行登录/注册接口
+                        .requestMatchers("/auth/login", "/auth/register",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**").permitAll()  // 放行登录/注册接口
                         .anyRequest().authenticated()  // 其他接口需要认证
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)  // 添加JWT过滤器

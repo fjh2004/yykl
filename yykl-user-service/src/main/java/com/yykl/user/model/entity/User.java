@@ -1,8 +1,10 @@
+// User.java
 package com.yykl.user.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -22,13 +24,27 @@ import lombok.Data;
  */
 @Data
 @TableName("yykl_user")
+@Schema(description = "用户实体类，存储系统用户信息")
 public class User {
     @TableId(type = IdType.AUTO)
+    @Schema(description = "主键ID，用户记录唯一标识，自增", example = "1")
     private Long id;
+
+    @Schema(description = "登录账号，唯一", required = true, example = "admin")
     private String username;
+
+    @Schema(description = "加密后的登录密码", required = true, example = "$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     private String password;
+
+    @Schema(description = "用户手机号，唯一", example = "13800138000")
     private String phone;
+
+    @Schema(description = "用户昵称", example = "张三")
     private String nickname;
+
+    @Schema(description = "用户头像URL地址", example = "https://example.com/avatar.jpg")
     private String avatar;
+
+    @Schema(description = "用户状态，0表示禁用，1表示正常", example = "1")
     private Integer status;
 }
